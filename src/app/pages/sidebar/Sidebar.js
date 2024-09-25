@@ -3,6 +3,7 @@ import { useState } from "react";
 import DashBoard from "./dashboard/DashBoard";
 import JobManagement from "./job-management/JobManagement";
 import { useRouter } from "next/navigation";
+import Link from "next/link";
 
 const Sidebar = () => {
   const [isOpen, setIsOpen] = useState(false);
@@ -27,9 +28,11 @@ const Sidebar = () => {
           >
             Job Post
           </p>
-          <p className="bg-white shadow rounded-md p-2 hover:bg-slate-100 transition duration-150 cursor-pointer">
-            Admit Card
-          </p>
+          <Link href={"admit-card"}>
+            <p className="bg-white shadow rounded-md p-2 hover:bg-slate-100 transition duration-150 cursor-pointer">
+              Admit Card
+            </p>
+          </Link>
           <p className="bg-white shadow rounded-md p-2 hover:bg-slate-100 transition duration-150 cursor-pointer">
             Answer Key
           </p>

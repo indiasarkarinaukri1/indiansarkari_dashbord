@@ -5,6 +5,7 @@ import { IoNotificationsOutline } from "react-icons/io5";
 import { RxAvatar } from "react-icons/rx";
 import { IoMdArrowDropdown } from "react-icons/io";
 import { useState } from "react";
+import Link from "next/link";
 
 const Header = () => {
   const [isOpen, setIsOpen] = useState(false);
@@ -14,11 +15,14 @@ const Header = () => {
       <div className="min-w-full max-h-20 bg-slate-100 p-2">
         <div className="flex justify-between items-center">
           <div className="flex items-center gap-12">
-            <Image
-              src={logo}
-              alt="indian-sarkari-logo"
-              className="relative h-16 w-16 overflow-hidden rounded-full bg-slate-100 border-2 border-blue-500 ml-4"
-            />
+            <Link href={"/"}>
+              {" "}
+              <Image
+                src={logo}
+                alt="indian-sarkari-logo"
+                className="relative h-16 w-16 overflow-hidden rounded-full bg-slate-100 border-2 border-blue-500 ml-4"
+              />
+            </Link>
             <h1 className="font-extrabold text-3xl">
               Welcome To Indian Sarkari Naukri
             </h1>
