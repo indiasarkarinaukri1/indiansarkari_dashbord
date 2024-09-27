@@ -1,25 +1,24 @@
 "use client";
+import JobManagementForm from "@/components/job-management-form";
 import React, { useState } from "react";
-import dynamic from "next/dynamic";
-import "react-quill/dist/quill.snow.css";
-import axios from "axios";
 
-const ReactQuill = dynamic(() => import("react-quill"), { ssr: false });
-const initialFormData = {
-  title: "",
-  date: "",
-  shortInformation: "",
-  content: "",
-  slug: "",
-  metaTags: "",
-  metaDescription: "",
-  canonicalUrl: "",
-  state: "",
-  categories: "",
-};
+const apiurl =
+  "https://4c8a9b33-9a59-44e9-96a8-5565e100af74-00-2tlr0w1o5f2ne.sisko.replit.dev/api/job-posts";
 
-const JobPost = ({ onSubmit }) => {
-  const [formData, setFormData] = useState(initialFormData);
+const AddJobPost = () => {
+  const [formData, setFormData] = useState({
+    title: "",
+    date: "",
+    ShortInformation: "",
+    content: "",
+    slug: "",
+    metaTags: "",
+    metaDescription: "",
+    canonicalUrl: "",
+    state: "",
+    categories: "",
+    created_by: "",
+  });
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
 
@@ -31,15 +30,84 @@ const JobPost = ({ onSubmit }) => {
     }));
   };
 
+  const handleImageUpload = async (file) => {
+    const formData = new FormData();
+    formData.append("file", file);
+
+    try {
+      const response = await fetch(apiurl, {
+        method: "POST",
+        body: formData,
+      });
+
+      const data = await response.json();
+      const imageUrl = data.url;
+      editor.chain().focus().setImage({ src: imageUrl }).run();
+    } catch (err) {
+      console.error("Image upload failed:", err);
+      setError("Image upload failed. Please try again.");
+    }
+  };
+
+  const handleFileUpload = async (file) => {
+    const formData = new FormData();
+    formData.append("file", file);
+
+    try {
+      const response = await fetch(apiurl, {
+        method: "POST",
+        body: formData,
+      });
+
+      const data = await response.json();
+      const fileUrl = data.url;
+      const linkTag = `<a href="${fileUrl}" target="_blank">${file.name}</a>`;
+      editor.commands.insertContent(linkTag);
+    } catch (err) {
+      console.error("File upload failed:", err);
+      setError("File upload failed. Please try again.");
+    }
+  };
+
   const handleSubmit = async (e) => {
     e.preventDefault();
     setLoading(true);
     setError("");
 
+    const updatedFormData = {
+      ...formData,
+      content: formData.content,
+    };
+
     try {
-      const response = await axios.post("/api/add-job-post", formData);
-      onSubmit(response.data);
-      setFormData(initialFormData);
+      const apiResponse = await fetch(apiurl, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(updatedFormData),
+      });
+
+      if (!apiResponse.ok) throw new Error("Network Response Was Not Ok");
+
+      const result = await apiResponse.json();
+      if (result?.success) {
+        setLoading(false);
+        setFormData({
+          title: "",
+          date: "",
+          ShortInformation: "",
+          content: "",
+          slug: "",
+          metaTags: "",
+          metaDescription: "",
+          canonicalUrl: "",
+          state: "",
+          categories: "",
+          created_by: "",
+        });
+        setError("");
+      }
     } catch (error) {
       console.error("Error submitting job post:", error);
       setError("Failed to submit the job post. Please try again.");
@@ -48,194 +116,22 @@ const JobPost = ({ onSubmit }) => {
     }
   };
 
-  const modules = {
-    toolbar: {
-      container: [
-        [{ header: [1, 2, false] }],
-        ["bold", "italic", "underline", "strike"],
-        ["link", "image", "video", "audio"],
-        ["clean"],
-      ],
-      handlers: {
-        image: () => {
-          const input = document.createElement("input");
-          input.setAttribute("type", "file");
-          input.setAttribute("accept", "image/*");
-          input.onchange = async () => {
-            const file = input.files[0];
-            await handleFileUpload(file, "image");
-          };
-          input.click();
-        },
-        video: () => {
-          const input = document.createElement("input");
-          input.setAttribute("type", "file");
-          input.setAttribute("accept", "video/*");
-          input.onchange = async () => {
-            const file = input.files[0];
-            await handleFileUpload(file, "video");
-          };
-          input.click();
-        },
-        audio: () => {
-          const input = document.createElement("input");
-          input.setAttribute("type", "file");
-          input.setAttribute("accept", "audio/*");
-          input.onchange = async () => {
-            const file = input.files[0];
-            await handleFileUpload(file, "audio");
-          };
-          input.click();
-        },
-      },
-    },
-  };
-
   return (
-    <form
-      className="max-w-2xl mx-auto p-6 bg-white shadow-md rounded-lg"
-      onSubmit={handleSubmit}
-    >
-      <h2 className="text-xl font-bold mb-4">Create Job Post</h2>
-
-      {error && <p className="text-red-500 mb-4">{error}</p>}
-
-      <div className="mb-4">
-        <label className="block text-sm font-medium text-gray-700">Title</label>
-        <input
-          type="text"
-          name="title"
-          className="mt-1 block w-full outline-none border border-gray-300 rounded-md shadow-sm p-2 focus:border-blue-500 focus:ring focus:ring-blue-200"
-          value={formData.title}
-          onChange={handleChange}
-          required
-        />
-      </div>
-
-      <div className="mb-4">
-        <label className="block text-sm font-medium text-gray-700">Date</label>
-        <input
-          type="date"
-          name="date"
-          className="mt-1 block outline-none w-full border border-gray-300 rounded-md shadow-sm p-2 focus:border-blue-500 focus:ring focus:ring-blue-200"
-          value={formData.date}
-          onChange={handleChange}
-          required
-        />
-      </div>
-
-      <div className="mb-4">
-        <label className="block text-sm font-medium text-gray-700">
-          Short Information
-        </label>
-        <input
-          type="text"
-          name="shortInformation"
-          className="mt-1 block w-full outline-none border border-gray-300 rounded-md shadow-sm p-2 focus:border-blue-500 focus:ring focus:ring-blue-200"
-          value={formData.shortInformation}
-          onChange={handleChange}
-        />
-      </div>
-
-      <div className="mb-4">
-        <label className="block text-sm font-medium text-gray-700">
-          Content
-        </label>
-        <ReactQuill
-          value={formData.content}
-          onChange={(value) =>
-            setFormData((prev) => ({ ...prev, content: value }))
-          }
-          modules={modules}
-          className="bg-gray-100 border border-gray-300 rounded-md shadow-sm"
-        />
-      </div>
-
-      <div className="mb-4">
-        <label className="block text-sm font-medium text-gray-700">Slug</label>
-        <input
-          type="text"
-          name="slug"
-          className="mt-1 block w-full outline-none border border-gray-300 rounded-md shadow-sm p-2 focus:border-blue-500 focus:ring focus:ring-blue-200"
-          value={formData.slug}
-          onChange={handleChange}
-          required
-        />
-      </div>
-
-      <div className="mb-4">
-        <label className="block text-sm font-medium text-gray-700">
-          Meta Tags
-        </label>
-        <input
-          type="text"
-          name="metaTags"
-          className="mt-1 block w-full outline-none border border-gray-300 rounded-md shadow-sm p-2 focus:border-blue-500 focus:ring focus:ring-blue-200"
-          value={formData.metaTags}
-          onChange={handleChange}
-        />
-      </div>
-
-      <div className="mb-4">
-        <label className="block text-sm font-medium text-gray-700">
-          Meta Description
-        </label>
-        <textarea
-          name="metaDescription"
-          className="mt-1 block w-full border outline-none border-gray-300 rounded-md shadow-sm p-2 focus:border-blue-500 focus:ring focus:ring-blue-200"
-          value={formData.metaDescription}
-          onChange={handleChange}
-        />
-      </div>
-
-      <div className="mb-4">
-        <label className="block text-sm font-medium text-gray-700">
-          Canonical URL
-        </label>
-        <input
-          type="text"
-          name="canonicalUrl"
-          className="mt-1 block w-full outline-none border border-gray-300 rounded-md shadow-sm p-2 focus:border-blue-500 focus:ring focus:ring-blue-200"
-          value={formData.canonicalUrl}
-          onChange={handleChange}
-        />
-      </div>
-
-      <div className="mb-4">
-        <label className="block text-sm font-medium text-gray-700">State</label>
-        <input
-          type="text"
-          name="state"
-          className="mt-1 block outline-none w-full border border-gray-300 rounded-md shadow-sm p-2 focus:border-blue-500 focus:ring focus:ring-blue-200"
-          value={formData.state}
-          onChange={handleChange}
-        />
-      </div>
-
-      <div className="mb-4">
-        <label className="block text-sm font-medium text-gray-700">
-          Categories
-        </label>
-        <input
-          type="text"
-          name="categories"
-          className="mt-1 block w-full outline-none border border-gray-300 rounded-md shadow-sm p-2 focus:border-blue-500 focus:ring focus:ring-blue-200"
-          value={formData.categories}
-          onChange={handleChange}
-        />
-      </div>
-
-      <button
-        type="submit"
-        className={`w-full ${
-          loading ? "bg-gray-400" : "bg-blue-600"
-        } text-white font-semibold py-2 px-4 rounded-md hover:bg-blue-700 transition duration-200`}
-        disabled={loading}
-      >
-        {loading ? "Submitting..." : "Submit"}
-      </button>
-    </form>
+    <div>
+      <JobManagementForm
+        optionName="Job Post"
+        formData={formData}
+        link="job-post"
+        setFormData={setFormData}
+        handleChange={handleChange}
+        handleSubmit={handleSubmit}
+        error={error}
+        loading={loading}
+        handleImageUpload={handleImageUpload}
+        handleFileUpload={handleFileUpload}
+      />
+    </div>
   );
 };
 
-export default JobPost;
+export default AddJobPost;

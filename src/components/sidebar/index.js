@@ -1,9 +1,9 @@
 "use client";
 import { useState } from "react";
-import DashBoard from "./dashboard/DashBoard";
-import JobManagement from "./job-management/JobManagement";
+
 import { useRouter } from "next/navigation";
-import Link from "next/link";
+import DashBoard from "@/app/pages/sidebar/dashboard/DashBoard";
+import JobManagement from "@/app/pages/sidebar/job-management/JobManagement";
 
 const Sidebar = () => {
   const [isOpen, setIsOpen] = useState(false);
@@ -28,18 +28,30 @@ const Sidebar = () => {
           >
             Job Post
           </p>
-          <Link href={"admit-card"}>
-            <p className="bg-white shadow rounded-md p-2 hover:bg-slate-100 transition duration-150 cursor-pointer">
-              Admit Card
-            </p>
-          </Link>
-          <p className="bg-white shadow rounded-md p-2 hover:bg-slate-100 transition duration-150 cursor-pointer">
+
+          <p
+            onClick={() => router.push("admit-card")}
+            className="bg-white shadow rounded-md p-2 hover:bg-slate-100 transition duration-150 cursor-pointer"
+          >
+            Admit Card
+          </p>
+
+          <p
+            onClick={() => router.push("answer-key")}
+            className="bg-white shadow rounded-md p-2 hover:bg-slate-100 transition duration-150 cursor-pointer"
+          >
             Answer Key
           </p>
-          <p className="bg-white shadow rounded-md p-2 hover:bg-slate-100 transition duration-150 cursor-pointer">
+          <p
+            onClick={() => router.push("result")}
+            className="bg-white shadow rounded-md p-2 hover:bg-slate-100 transition duration-150 cursor-pointer"
+          >
             Result
           </p>
-          <p className="bg-white shadow rounded-md p-2 hover:bg-slate-100 transition duration-150 cursor-pointer">
+          <p
+            onClick={() => router.push("syllabus")}
+            className="bg-white shadow rounded-md p-2 hover:bg-slate-100 transition duration-150 cursor-pointer"
+          >
             Syllabus
           </p>
         </div>
