@@ -18,7 +18,7 @@ export function JobPostList({ apiPostFormData }) {
   const deleteFormData = async (getCurrentID) => {
     try {
       const isResponse = await fetch(
-        `https://4c8a9b33-9a59-44e9-96a8-5565e100af74-00-2tlr0w1o5f2ne.sisko.replit.dev/api/job-posts/${getCurrentID}`,
+        `https://2aca07c8-73ea-4f73-82d7-9bcd869a37fb-00-efcuu5mloosk.sisko.replit.dev/api/job-posts/${getCurrentID}`,
         {
           method: "DELETE",
         }
