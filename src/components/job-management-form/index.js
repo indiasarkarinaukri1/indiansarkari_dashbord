@@ -196,8 +196,9 @@ const JobManagementForm = ({
         } text-white font-semibold py-2 px-4 rounded-md hover:bg-blue-700 transition duration-200`}
         disabled={loading}
       >
-        {loading ? "Submitting..." : "Submit"}
+        {loading ? "Saving..." : formData.id ? "Update" : "Create"}
       </button>
+      {error && <p>{error}</p>}
     </form>
   );
 };

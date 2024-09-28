@@ -129,6 +129,7 @@ const AddAdmitCard = () => {
         handleImageUpload={handleImageUpload}
         handleFileUpload={handleFileUpload}
       />
+      
     </div>
   );
 };

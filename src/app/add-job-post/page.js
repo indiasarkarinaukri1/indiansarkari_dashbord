@@ -1,11 +1,14 @@
 "use client";
 import JobManagementForm from "@/components/job-management-form";
-import React, { useState } from "react";
+import { useSearchParams } from "next/navigation";
+import React, { useEffect, useState } from "react";
 
 const apiurl =
   "https://4c8a9b33-9a59-44e9-96a8-5565e100af74-00-2tlr0w1o5f2ne.sisko.replit.dev/api/job-posts";
 
 const AddJobPost = () => {
+  const searchParams = useSearchParams();
+  const format = searchParams.get("format");
   const [formData, setFormData] = useState({
     title: "",
     date: "",
@@ -21,6 +24,17 @@ const AddJobPost = () => {
   });
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
+
+  useEffect(() => {
+    if (format) {
+      const parsedData = JSON.parse(decodeURIComponent(format));
+      if (parsedData.date) {
+        const date = new Date(parsedData.date);
+        parsedData.date = date.toISOString().split("T")[0];
+      }
+      setFormData(parsedData);
+    }
+  }, [format]);
 
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -80,13 +94,16 @@ const AddJobPost = () => {
     };
 
     try {
-      const apiResponse = await fetch(apiurl, {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify(updatedFormData),
-      });
+      const apiResponse = await fetch(
+        formData.id ? `${apiurl}/${formData.id}` : apiurl,
+        {
+          method: formData.id ? "PUT" : "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify(updatedFormData),
+        }
+      );
 
       if (!apiResponse.ok) throw new Error("Network Response Was Not Ok");
 

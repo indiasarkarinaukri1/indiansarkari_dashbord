@@ -2,6 +2,7 @@ import localFont from "next/font/local";
 import "./globals.css";
 import Header from "@/components/navbar";
 import Sidebar from "@/components/sidebar";
+import { Suspense } from "react";
 
 const geistSans = localFont({
   src: "./fonts/GeistVF.woff",
@@ -29,7 +30,9 @@ export default function RootLayout({ children }) {
           <Header />
           <div className="flex flex-1">
             <Sidebar />
-            <main className="flex-1 p-4">{children}</main>
+            <Suspense fallback={<div>Loading...</div>}>
+              <main className="flex-1 p-4">{children}</main>
+            </Suspense>
           </div>
         </div>
       </body>

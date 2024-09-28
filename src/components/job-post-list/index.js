@@ -9,7 +9,7 @@ import {
   TableRow,
 } from "@/components/ui/table";
 import { useRouter } from "next/navigation";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import { Button } from "../ui/button";
 import { MdModeEditOutline } from "react-icons/md";
 import { RiDeleteBin6Line } from "react-icons/ri";
@@ -36,6 +36,11 @@ export function JobPostList({ apiPostFormData }) {
     } catch (error) {
       console.error("Error during deletion:", error);
     }
+  };
+
+  const updateFormData = (getCurrentFormData) => {
+    const query = encodeURIComponent(JSON.stringify(getCurrentFormData));
+    router.push(`add-job-post?format=${query}`);
   };
 
   useEffect(() => {
@@ -131,7 +136,7 @@ export function JobPostList({ apiPostFormData }) {
                   {renderCell(formData?.created_by)}
                 </TableCell>
                 <Button>
-                  <MdModeEditOutline />
+                  <MdModeEditOutline onClick={() => updateFormData(formData)} />
                 </Button>
                 <Button
                   variant="destructive"
