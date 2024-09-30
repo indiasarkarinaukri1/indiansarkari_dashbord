@@ -9,21 +9,22 @@ import {
   TableRow,
 } from "@/components/ui/table";
 import { useRouter } from "next/navigation";
-import { useEffect, useState } from "react";
+import { useEffect } from "react";
 import { Button } from "../ui/button";
 import { MdModeEditOutline } from "react-icons/md";
 import { RiDeleteBin6Line } from "react-icons/ri";
-export function JobPostList({ apiPostFormData }) {
+export function JobPostList({ apiPostFormData, updatRouteType, apiRoute }) {
   const router = useRouter();
   const deleteFormData = async (getCurrentID) => {
     try {
       const isResponse = await fetch(
-        `https://2aca07c8-73ea-4f73-82d7-9bcd869a37fb-00-efcuu5mloosk.sisko.replit.dev/api/job-posts/${getCurrentID}`,
+        `https://2aca07c8-73ea-4f73-82d7-9bcd869a37fb-00-efcuu5mloosk.sisko.replit.dev/api/${apiRoute}/${getCurrentID}`,
         {
           method: "DELETE",
         }
       );
-
+      console.log(`Response Status: ${isResponse.status}`);
+      console.log(`Response OK: ${isResponse.ok}`);
       if (!isResponse.ok) {
         const errorText = await isResponse.text();
         console.error(
@@ -40,7 +41,7 @@ export function JobPostList({ apiPostFormData }) {
 
   const updateFormData = (getCurrentFormData) => {
     const query = encodeURIComponent(JSON.stringify(getCurrentFormData));
-    router.push(`add-job-post?format=${query}`);
+    router.push(`${updatRouteType}?format=${query}`);
   };
 
   useEffect(() => {

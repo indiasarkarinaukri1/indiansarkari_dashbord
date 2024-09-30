@@ -1,11 +1,14 @@
 "use client";
 import JobManagementForm from "@/components/job-management-form";
-import React, { useState } from "react";
+import { useSearchParams } from "next/navigation";
+import React, { useEffect, useState } from "react";
 
 const apiurl =
-  "https://2aca07c8-73ea-4f73-82d7-9bcd869a37fb-00-efcuu5mloosk.sisko.replit.dev/api/job-posts";
+  "https://2aca07c8-73ea-4f73-82d7-9bcd869a37fb-00-efcuu5mloosk.sisko.replit.dev/api/admit";
 
 const AddAdmitCard = () => {
+  const searchParams = useSearchParams();
+  const format = searchParams.get("format");
   const [formData, setFormData] = useState({
     title: "",
     date: "",
@@ -21,6 +24,17 @@ const AddAdmitCard = () => {
   });
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
+
+  useEffect(() => {
+    if (format) {
+      const parsedData = JSON.parse(decodeURIComponent(format));
+      if (parsedData.date) {
+        const date = new Date(parsedData.date);
+        parsedData.date = date.toISOString().split("T")[0];
+      }
+      setFormData(parsedData);
+    }
+  }, [format]);
 
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -80,23 +94,24 @@ const AddAdmitCard = () => {
     };
 
     try {
-      const apiResponse = await fetch(apiurl, {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify(updatedFormData),
-      });
+      const apiResponse = await fetch(
+        formData.id ? `${apiurl}/${formData.id}` : apiurl,
+        {
+          method: formData.id ? "PUT" : "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify(updatedFormData),
+        }
+      );
 
       if (!apiResponse.ok) throw new Error("Network Response Was Not Ok");
-
-      const result = await apiResponse.json();
-      if (result?.success) {
+      else {
         setLoading(false);
         setFormData({
           title: "",
           date: "",
-          shortInformation: "",
+          ShortInformation: "",
           content: "",
           slug: "",
           metaTags: "",
@@ -121,6 +136,7 @@ const AddAdmitCard = () => {
       <JobManagementForm
         optionName="Admit Card"
         formData={formData}
+        link="admit-card"
         setFormData={setFormData}
         handleChange={handleChange}
         handleSubmit={handleSubmit}

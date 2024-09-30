@@ -3,7 +3,7 @@ import { JobPostList } from "@/components/job-post-list";
 const fetchFormData = async () => {
   try {
     const apiResponse = await fetch(
-      "https://2aca07c8-73ea-4f73-82d7-9bcd869a37fb-00-efcuu5mloosk.sisko.replit.dev/api/job-posts",
+      "https://2aca07c8-73ea-4f73-82d7-9bcd869a37fb-00-efcuu5mloosk.sisko.replit.dev/api/admit",
       {
         method: "GET",
         cache: "no-cache",
@@ -28,7 +28,11 @@ export default async function AdmitCard() {
       />
       <div className="font-bold text-3xl text-gray-800">
         all job post list here
-        <JobPostList apiPostFormData={apiPostFormData} />
+        <JobPostList
+          apiPostFormData={apiPostFormData}
+          updatRouteType="add-admit-card"
+          apiRoute="admit"
+        />
       </div>
     </>
   );

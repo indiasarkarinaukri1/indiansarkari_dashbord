@@ -106,9 +106,7 @@ const AddJobPost = () => {
       );
 
       if (!apiResponse.ok) throw new Error("Network Response Was Not Ok");
-
-      const result = await apiResponse.json();
-      if (result?.success) {
+      else {
         setLoading(false);
         setFormData({
           title: "",

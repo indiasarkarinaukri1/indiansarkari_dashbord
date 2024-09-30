@@ -27,7 +27,11 @@ export default async function JobPost() {
       />
       <div className="font-bold text-3xl text-gray-800">
         all job post list here
-        <JobPostList apiPostFormData={apiPostFormData} />
+        <JobPostList
+          apiRoute="job-posts"
+          apiPostFormData={apiPostFormData}
+          updatRouteType="add-job-post"
+        />
       </div>
     </>
   );
