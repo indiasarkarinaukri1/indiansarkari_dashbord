@@ -41,6 +41,7 @@ export function JobPostList({ apiPostFormData, updatRouteType, apiRoute }) {
 
   const updateFormData = (getCurrentFormData) => {
     const query = encodeURIComponent(JSON.stringify(getCurrentFormData));
+
     router.push(`${updatRouteType}?format=${query}`);
   };
 
