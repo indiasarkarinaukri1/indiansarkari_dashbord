@@ -49,10 +49,16 @@ const Sidebar = () => {
             Result
           </p>
           <p
-            onClick={() => router.push("syllabus")}
+            onClick={() => router.push("old-paper-model")}
             className="bg-white shadow rounded-md p-2 hover:bg-slate-100 transition duration-150 cursor-pointer"
           >
-            Syllabus
+            Old Paper Model
+          </p>
+          <p
+            onClick={() => router.push("reading-book-model")}
+            className="bg-white shadow rounded-md p-2 hover:bg-slate-100 transition duration-150 cursor-pointer"
+          >
+            Reading Book Model
           </p>
         </div>
       )}
