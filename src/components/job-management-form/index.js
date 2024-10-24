@@ -1,6 +1,9 @@
 import { useRouter } from "next/navigation";
 import RichTextEditor from "../text-Editor";
-import { useState } from "react";
+import { useState, useEffect } from "react";
+
+import Dropdown from "./dropdown/Dropdown";
+import apiurl from "@/utils";
 
 const JobManagementForm = ({
   formData,
@@ -28,7 +31,7 @@ const JobManagementForm = ({
       created_by,
     } = formData;
 
-    if (!title || !date || !slug || !created_by) {
+    if (!title || !date || !slug) {
       setValidationError("Please fill in all required fields.");
       return;
     }
@@ -37,6 +40,10 @@ const JobManagementForm = ({
     handleSubmit(event);
     router.push(link);
   };
+
+  useEffect(() => {
+    console.log(formData);
+  }, [formData]);
 
   return (
     <form
@@ -81,9 +88,9 @@ const JobManagementForm = ({
         </label>
         <input
           type="text"
-          name="ShortInformation"
+          name="description"
           className="mt-1 block w-full outline-none border border-gray-300 rounded-md shadow-sm p-2 focus:border-blue-500 focus:ring focus:ring-blue-200"
-          value={formData.ShortInformation}
+          value={formData.description}
           onChange={handleChange}
         />
       </div>
@@ -152,42 +159,39 @@ const JobManagementForm = ({
         />
       </div>
 
-      <div className="mb-4">
-        <label className="block text-sm font-medium text-gray-700">State</label>
-        <input
-          type="text"
-          name="state"
-          className="mt-1 block outline-none w-full border border-gray-300 rounded-md shadow-sm p-2 focus:border-blue-500 focus:ring focus:ring-blue-200"
-          value={formData.state}
-          onChange={handleChange}
-        />
-      </div>
+      <Dropdown
+        label="State"
+        endpoint={`${apiurl}/state`}
+        formData={formData}
+        setFormData={setFormData}
+        dataKey="state_id"
+      />
 
-      <div className="mb-4">
-        <label className="block text-sm font-medium text-gray-700">
-          Categories
-        </label>
-        <input
-          type="text"
-          name="categories"
-          className="mt-1 block w-full outline-none border border-gray-300 rounded-md shadow-sm p-2 focus:border-blue-500 focus:ring focus:ring-blue-200"
-          value={formData.categories}
-          onChange={handleChange}
-        />
-      </div>
+      <Dropdown
+        label="Category"
+        endpoint={`${apiurl}/category`}
+        formData={formData}
+        setFormData={setFormData}
+        dataKey="category_id"
+      />
 
-      <div className="mb-4">
-        <label className="block text-sm font-medium text-gray-700">
-          Created BY
-        </label>
-        <input
-          type="text"
-          name="created_by"
-          className="mt-1 block w-full outline-none border border-gray-300 rounded-md shadow-sm p-2 focus:border-blue-500 focus:ring focus:ring-blue-200"
-          value={formData.created_by}
-          onChange={handleChange}
-        />
-      </div>
+      <Dropdown
+        label="Subcategory"
+        endpoint={`${apiurl}/subcategory`}
+        formData={formData}
+        setFormData={setFormData}
+        dataKey="subcategory_id"
+      />
+
+      <Dropdown
+        label="Department"
+        endpoint={`${apiurl}/depertment`}
+        formData={formData}
+        setFormData={setFormData}
+        dataKey="department_id"
+      />
+
+      
 
       <button
         type="submit"

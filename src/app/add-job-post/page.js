@@ -4,23 +4,23 @@ import { useSearchParams } from "next/navigation";
 import React, { useEffect, useState } from "react";
 
 const apiurl =
-  "https://2aca07c8-73ea-4f73-82d7-9bcd869a37fb-00-efcuu5mloosk.sisko.replit.dev/api/job-posts";
-
+  "https://71669ed0-6720-40de-8851-af1c9261cc0a-00-3hjdx6mljzz47.sisko.replit.dev/job";
 const AddJobPost = () => {
   const searchParams = useSearchParams();
   const format = searchParams.get("format");
   const [formData, setFormData] = useState({
     title: "",
     date: "",
-    ShortInformation: "",
+    description: "",
     content: "",
     slug: "",
     metaTags: "",
     metaDescription: "",
     canonicalUrl: "",
-    state: "",
-    categories: "",
-    created_by: "",
+    state_id: "",
+    category_id: "",
+    department_id: "",
+    subcategory_id: "",
   });
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
@@ -111,15 +111,16 @@ const AddJobPost = () => {
         setFormData({
           title: "",
           date: "",
-          ShortInformation: "",
+          description: "",
           content: "",
           slug: "",
           metaTags: "",
           metaDescription: "",
           canonicalUrl: "",
-          state: "",
-          categories: "",
-          created_by: "",
+          state_id: "",
+          category_id: "",
+          department_id: "",
+          subcategory_id: "",
         });
         setError("");
       }

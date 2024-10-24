@@ -1,10 +1,10 @@
 "use client";
 import JobManagementForm from "@/components/job-management-form";
+import apiurl from "@/utils";
 import { useSearchParams } from "next/navigation";
 import React, { useEffect, useState } from "react";
 
-const apiurl =
-  "https://2aca07c8-73ea-4f73-82d7-9bcd869a37fb-00-efcuu5mloosk.sisko.replit.dev/api/admit";
+
 
 const AddAdmitCard = () => {
   const searchParams = useSearchParams();
@@ -95,7 +95,7 @@ const AddAdmitCard = () => {
 
     try {
       const apiResponse = await fetch(
-        formData.id ? `${apiurl}/${formData.id}` : apiurl,
+        formData.id ? `${apiurl}/job/${formData.id}` : apiurl,
         {
           method: formData.id ? "PUT" : "POST",
           headers: {

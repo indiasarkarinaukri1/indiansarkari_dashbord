@@ -127,7 +127,6 @@ const PaperModelForm = ({
               required
             />
           </div>
-
           <div>
             <Label className="text-sm font-medium">Created At</Label>
             <Input

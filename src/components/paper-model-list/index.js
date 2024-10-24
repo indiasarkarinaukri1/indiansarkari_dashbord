@@ -56,7 +56,6 @@ const PaperModelList = ({ apiPostFormData, updateRoute }) => {
     setSelectedPdf(pdfUrl);
     setOpenDialog(true);
   };
-
   useEffect(() => {
     router.refresh();
   }, [router]);
@@ -147,7 +146,6 @@ const PaperModelList = ({ apiPostFormData, updateRoute }) => {
                           <DialogHeader>
                             <DialogTitle>Pdf Preview</DialogTitle>
                           </DialogHeader>
-
                           <div className="min-h-[450px]">
                             <iframe
                               src={`${selectedPdf}#toolbar=0`}

@@ -1,5 +1,4 @@
-"use client";
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import { useEditor, EditorContent } from "@tiptap/react";
 import StarterKit from "@tiptap/starter-kit";
 import Image from "@tiptap/extension-image";
@@ -12,16 +11,31 @@ const RichTextEditor = ({
   handleImageUpload,
   handleFileUpload,
 }) => {
+  const [mounted, setMounted] = useState(false);
+
+  useEffect(() => {
+    setMounted(true);
+  }, []);
+
   const editor = useEditor({
     extensions: [StarterKit, Image, Link],
     content: content || "<p></p>",
+    editorProps: {
+      attributes: {
+        class: "prose prose-sm focus:outline-none",
+      },
+    },
   });
 
   useEffect(() => {
     if (editor) {
-      setContent(editor.getHTML());
+      setContent(editor.getText()); 
     }
-  }, [editor?.getHTML()]);
+  }, [editor?.getText()]);
+
+  if (!mounted) {
+    return null;
+  }
 
   return (
     <div>

@@ -1,9 +1,10 @@
 import JobManagementOption from "@/components/job-management-option";
 import { JobPostList } from "@/components/job-post-list";
+import apiurl from "@/utils";
 const fetchFormData = async () => {
   try {
     const apiResponse = await fetch(
-      "https://2aca07c8-73ea-4f73-82d7-9bcd869a37fb-00-efcuu5mloosk.sisko.replit.dev/api/admit",
+      `${apiurl}/jobupdate/admit-cards`,
       {
         method: "GET",
         cache: "no-cache",
