@@ -4,12 +4,16 @@ import { useState, useEffect } from "react";
 const Dropdown = ({ label, endpoint, formData, setFormData, dataKey }) => {
   const [items, setItems] = useState([]);
 
+  const [departmentId, setDepartmentId] = useState();
+
   useEffect(() => {
     const fetchData = async () => {
       try {
         const response = await fetch(endpoint);
         const data = await response.json();
-        setItems(data);
+
+        // Ensure data.rows exists before setting items
+        setItems(data.rows || []);
       } catch (error) {
         console.error("Error fetching data: ", error);
       }
@@ -21,8 +25,9 @@ const Dropdown = ({ label, endpoint, formData, setFormData, dataKey }) => {
     const selectedId = event.target.value;
     setFormData((prev) => ({
       ...prev,
-      [dataKey]: selectedId, 
+      [dataKey]: selectedId,
     }));
+    // onChange(selectedId);
   };
 
   return (
@@ -30,7 +35,7 @@ const Dropdown = ({ label, endpoint, formData, setFormData, dataKey }) => {
       <label className="block text-sm font-medium text-gray-700">{label}</label>
       <select
         className="mt-1 block w-full outline-none border border-gray-300 rounded-md shadow-sm p-2"
-        value={formData[dataKey]}
+        value={formData[dataKey] || ""}
         onChange={handleChange}
       >
         <option value="">Select {label}</option>

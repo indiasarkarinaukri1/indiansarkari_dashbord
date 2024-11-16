@@ -4,8 +4,6 @@ import apiurl from "@/utils";
 import { useSearchParams } from "next/navigation";
 import React, { useEffect, useState } from "react";
 
-
-
 const AddAdmitCard = () => {
   const searchParams = useSearchParams();
   const format = searchParams.get("format");
@@ -150,3 +148,24 @@ const AddAdmitCard = () => {
 };
 
 export default AddAdmitCard;
+
+export const generateMetaData = async (formData) => {
+  if (!formData) return {};
+
+  // Define basic metadata fields based on formData
+  const metadata = {
+    title: formData.title || "Add Job Post",
+    description: formData.metaDescription || formData.description || "",
+    canonical: formData.canonicalUrl || "",
+    metaTags: formData.metaTags
+      ? formData.metaTags.split(",").map((tag) => tag.trim())
+      : [],
+  };
+
+  return {
+    title: metadata.title,
+    description: metadata.description,
+    canonical: metadata.canonical,
+    metaTags: metadata.metaTags,
+  };
+};

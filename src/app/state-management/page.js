@@ -7,10 +7,11 @@ const fetchApiResponse = async () => {
       method: "GET",
       cache: "no-store",
     });
-    const result = apiResponse.json();
-    return result;
+    const result = await apiResponse.json();
+    return result.rows;
   } catch (error) {
-    throw new Error(error);
+    //throw new Error(error);
+    console.log(error);
   }
 };
 const StateManagement = async () => {

@@ -8,9 +8,11 @@ const fetchApiResponse = async () => {
       cache: "no-store",
     });
     const result = await apiResponse.json();
-    return result;
+
+    return result.rows;
   } catch (error) {
-    throw new Error(error);
+    console.log(error);
+    //throw new Error(error);
   }
 };
 const CategoryManagement = async () => {

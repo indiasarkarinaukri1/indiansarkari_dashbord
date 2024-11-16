@@ -1,9 +1,8 @@
 import { useRouter } from "next/navigation";
-import RichTextEditor from "../text-Editor";
-import { useState, useEffect } from "react";
-
+import { useState, useEffect, useRef } from "react";
 import Dropdown from "./dropdown/Dropdown";
 import apiurl from "@/utils";
+import JoditEditorComponent from "../jodit-editor";
 
 const JobManagementForm = ({
   formData,
@@ -13,23 +12,14 @@ const JobManagementForm = ({
   error,
   link,
   loading,
-  handleImageUpload,
-  handleFileUpload,
   optionName,
 }) => {
   const router = useRouter();
   const [validationError, setValidationError] = useState(null);
-
+  const editor = useRef(null);
   const validateAndSubmit = (event) => {
     event.preventDefault();
-    const {
-      title,
-      date,
-
-      slug,
-
-      created_by,
-    } = formData;
+    const { title, date, slug } = formData;
 
     if (!title || !date || !slug) {
       setValidationError("Please fill in all required fields.");
@@ -41,10 +31,6 @@ const JobManagementForm = ({
     router.push(link);
   };
 
-  useEffect(() => {
-    console.log(formData);
-  }, [formData]);
-
   return (
     <form
       className="max-w-2xl mx-auto p-6 bg-white shadow-md rounded-lg"
@@ -55,7 +41,6 @@ const JobManagementForm = ({
       {validationError && (
         <p className="text-red-500 mb-4">{validationError}</p>
       )}
-
       {error && <p className="text-red-500 mb-4">{error}</p>}
 
       <div className="mb-4">
@@ -99,13 +84,12 @@ const JobManagementForm = ({
         <label className="block text-sm font-medium text-gray-700">
           Content
         </label>
-        <RichTextEditor
+        <JoditEditorComponent
           content={formData.content}
-          setContent={(content) =>
-            setFormData((prev) => ({ ...prev, content }))
+          setContent={(newContent) =>
+            setFormData((prev) => ({ ...prev, content: newContent }))
           }
-          handleImageUpload={handleImageUpload}
-          handleFileUpload={handleFileUpload}
+          editor={editor}
         />
       </div>
 
@@ -190,8 +174,6 @@ const JobManagementForm = ({
         setFormData={setFormData}
         dataKey="department_id"
       />
-
-      
 
       <button
         type="submit"

@@ -1,25 +1,23 @@
+import { AdmitCardList } from "@/components/admit-card-list";
 import JobManagementOption from "@/components/job-management-option";
-import { JobPostList } from "@/components/job-post-list";
 import apiurl from "@/utils";
 const fetchFormData = async () => {
   try {
-    const apiResponse = await fetch(
-      `${apiurl}/jobupdate/admit-cards`,
-      {
-        method: "GET",
-        cache: "no-cache",
-      }
-    );
+    const apiResponse = await fetch(`${apiurl}/jobupdate/get/admit-cards`, {
+      method: "GET",
+      cache: "no-cache",
+    });
 
     const result = await apiResponse.json();
-    return result;
+    return result.rows;
   } catch (error) {
-    throw new Error(error);
+    console.log(error);
   }
 };
 export default async function AdmitCard() {
   const apiPostFormData = await fetchFormData();
-
+  // const apiPostFormData = apiPostForm.map((data) => data.Job);
+  // console.log(apiPostFormData);
   return (
     <>
       <JobManagementOption
@@ -28,11 +26,11 @@ export default async function AdmitCard() {
         option="New Admit Card"
       />
       <div className="font-bold text-3xl text-gray-800">
-        all job post list here
-        <JobPostList
+        all AdmitCard list here
+        <AdmitCardList
           apiPostFormData={apiPostFormData}
           updatRouteType="add-admit-card"
-          apiRoute="admit"
+          apiRoute="jobupdate"
         />
       </div>
     </>

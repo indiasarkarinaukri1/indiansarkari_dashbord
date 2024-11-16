@@ -19,8 +19,6 @@ import apiurl from "@/utils";
 const CategoryList = ({ apiPostFormData, deleteRoute, updateRoute }) => {
   const router = useRouter();
   const handelDeleteModel = async (getCurrentID) => {
-    console.log(getCurrentID);
-
     try {
       const apiResponse = await fetch(
         `${apiurl}/${deleteRoute}/${getCurrentID}`,
@@ -35,8 +33,9 @@ const CategoryList = ({ apiPostFormData, deleteRoute, updateRoute }) => {
       console.log(error);
     }
   };
-  const handelEditModel = async (getCurrentModelItem) => {
-    const query = encodeURIComponent(JSON.stringify(getCurrentModelItem));
+
+  const handelEditMode = (getCurrentData) => {
+    const query = encodeURIComponent(JSON.stringify(getCurrentData));
     router.push(`${updateRoute}?format=${query}`);
   };
 
@@ -68,7 +67,6 @@ const CategoryList = ({ apiPostFormData, deleteRoute, updateRoute }) => {
             <TableHead className="p-4 font-bold text-gray-700 border-b-2 w-40">
               Updated By
             </TableHead>
-           
           </TableRow>
         </TableHeader>
         <TableBody className="divide-y divide-gray-200">
@@ -93,10 +91,8 @@ const CategoryList = ({ apiPostFormData, deleteRoute, updateRoute }) => {
                   {renderCell(formData?.updated_by)}
                 </TableCell>
                 <TableCell className="p-4">
-                  <Button>
-                    <MdModeEditOutline
-                      onClick={() => handelEditModel(formData)}
-                    />
+                  <Button onClick={() => handelEditMode(formData)}>
+                    <MdModeEditOutline />
                   </Button>
                 </TableCell>
                 <TableCell className="p-4">

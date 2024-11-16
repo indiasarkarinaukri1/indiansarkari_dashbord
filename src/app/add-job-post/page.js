@@ -1,10 +1,10 @@
 "use client";
 import JobManagementForm from "@/components/job-management-form";
+import apiurl from "@/utils";
 import { useSearchParams } from "next/navigation";
 import React, { useEffect, useState } from "react";
 
-const apiurl =
-  "https://71669ed0-6720-40de-8851-af1c9261cc0a-00-3hjdx6mljzz47.sisko.replit.dev/job";
+const apiUrl = `${apiurl}/job`;
 const AddJobPost = () => {
   const searchParams = useSearchParams();
   const format = searchParams.get("format");
@@ -44,45 +44,6 @@ const AddJobPost = () => {
     }));
   };
 
-  const handleImageUpload = async (file) => {
-    const formData = new FormData();
-    formData.append("file", file);
-
-    try {
-      const response = await fetch(apiurl, {
-        method: "POST",
-        body: formData,
-      });
-
-      const data = await response.json();
-      const imageUrl = data.url;
-      editor.chain().focus().setImage({ src: imageUrl }).run();
-    } catch (err) {
-      console.error("Image upload failed:", err);
-      setError("Image upload failed. Please try again.");
-    }
-  };
-
-  const handleFileUpload = async (file) => {
-    const formData = new FormData();
-    formData.append("file", file);
-
-    try {
-      const response = await fetch(apiurl, {
-        method: "POST",
-        body: formData,
-      });
-
-      const data = await response.json();
-      const fileUrl = data.url;
-      const linkTag = `<a href="${fileUrl}" target="_blank">${file.name}</a>`;
-      editor.commands.insertContent(linkTag);
-    } catch (err) {
-      console.error("File upload failed:", err);
-      setError("File upload failed. Please try again.");
-    }
-  };
-
   const handleSubmit = async (e) => {
     e.preventDefault();
     setLoading(true);
@@ -95,7 +56,7 @@ const AddJobPost = () => {
 
     try {
       const apiResponse = await fetch(
-        formData.id ? `${apiurl}/${formData.id}` : apiurl,
+        formData.id ? `${apiUrl}/${formData.id}` : apiUrl,
         {
           method: formData.id ? "PUT" : "POST",
           headers: {
@@ -122,32 +83,48 @@ const AddJobPost = () => {
           department_id: "",
           subcategory_id: "",
         });
-        setError("");
       }
     } catch (error) {
-      console.error("Error submitting job post:", error);
-      setError("Failed to submit the job post. Please try again.");
-    } finally {
       setLoading(false);
+      setError("An error occurred while saving the job.");
     }
   };
 
   return (
-    <div>
+    <div className="container mx-auto p-8">
       <JobManagementForm
-        optionName="Job Post"
         formData={formData}
-        link="job-post"
         setFormData={setFormData}
         handleChange={handleChange}
         handleSubmit={handleSubmit}
         error={error}
         loading={loading}
-        handleImageUpload={handleImageUpload}
-        handleFileUpload={handleFileUpload}
+        link="job-post"
+        optionName="Job Post"
       />
     </div>
   );
 };
 
 export default AddJobPost;
+
+export const generateMetaData = async (formData) => {
+  if (!formData) return {};
+
+  // Define basic metadata fields based on formData
+  const metadata = {
+    title: formData.title || "Add Job Post",
+    description: formData.metaDescription || formData.description || "",
+    canonical: formData.canonicalUrl || "",
+    metaTags: formData.metaTags
+      ? formData.metaTags.split(",").map((tag) => tag.trim())
+      : [],
+  };
+
+  return {
+    title: metadata.title,
+    description: metadata.description,
+    canonical: metadata.canonical,
+    metaTags: metadata.metaTags,
+  };
+};

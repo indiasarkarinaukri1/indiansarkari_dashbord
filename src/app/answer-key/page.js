@@ -1,22 +1,23 @@
 import JobManagementOption from "@/components/job-management-option";
-import { JobPostList } from "@/components/job-post-list";
+import apiurl from "@/utils";
+import { AnswerKeyList } from "@/components/answer-key-list";
 const fetchFromData = async () => {
   try {
-    const apiResponse = await fetch(
-      "https://2aca07c8-73ea-4f73-82d7-9bcd869a37fb-00-efcuu5mloosk.sisko.replit.dev/api/answer",
-      {
-        method: "GET",
-        cache: "no-cache",
-      }
-    );
+    const apiResponse = await fetch(`${apiurl}/jobupdate/get/answer-keys`, {
+      method: "GET",
+      cache: "no-cache",
+    });
     const result = await apiResponse.json();
+    console.log(result);
     return result;
   } catch (error) {
-    throw new Error(error);
+    // throw new Error(error);
+    console.log(error);
   }
 };
 export default async function AnswerKey() {
   const apiPostFormData = await fetchFromData();
+  //console.log(apiPostFormData);
 
   return (
     <>
@@ -28,7 +29,7 @@ export default async function AnswerKey() {
       <h1 className="font-bold text-3xl text-gray-900">
         All AnswerKey List Here
       </h1>
-      <JobPostList
+      <AnswerKeyList
         apiPostFormData={apiPostFormData}
         updatRouteType="add-answer-key"
         apiRoute="answer"

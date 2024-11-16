@@ -1,19 +1,18 @@
 import JobManagementOption from "@/components/job-management-option";
-import { JobPostList } from "@/components/job-post-list";
+import { ResultList } from "@/components/result-list";
+import apiurl from "@/utils";
 const fetchFormData = async () => {
   try {
-    const apiResponse = await fetch(
-      "https://2aca07c8-73ea-4f73-82d7-9bcd869a37fb-00-efcuu5mloosk.sisko.replit.dev/api/result",
-      {
-        method: "GET",
-        cache: "no-cache",
-      }
-    );
+    const apiResponse = await fetch(`${apiurl}/jobupdate/get/results`, {
+      method: "GET",
+      cache: "no-cache",
+    });
 
     const result = await apiResponse.json();
     return result;
   } catch (error) {
-    throw new Error(error);
+    // throw new Error(error);
+    console.log(error);
   }
 };
 export default async function Result() {
@@ -27,7 +26,7 @@ export default async function Result() {
       />
       <div className="font-bold text-3xl text-gray-800">
         all Result list here
-        <JobPostList
+        <ResultList
           apiRoute="result"
           apiPostFormData={apiPostFormData}
           updatRouteType="add-result"

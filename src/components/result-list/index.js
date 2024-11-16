@@ -2,6 +2,19 @@
 import React, { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import parse from "html-react-parser";
+
+import { MdModeEditOutline } from "react-icons/md";
+import { RiDeleteBin6Line } from "react-icons/ri";
+import apiurl from "@/utils";
+import FilterComponent from "@/components/filter-component/FilterComponent";
+import SearchBar from "@/components/search";
+import ModalForm from "@/components/job-post-list/ModalForm/ModalForm";
+import {
+  Dialog,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+} from "@/components/ui/dialog";
 import {
   Table,
   TableBody,
@@ -11,28 +24,18 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
-import { Button } from "../ui/button";
-import { MdModeEditOutline } from "react-icons/md";
-import { RiDeleteBin6Line } from "react-icons/ri";
-import apiurl from "@/utils";
-import ModalForm from "./ModalForm/ModalForm";
-import SearchBar from "../search";
-import { Dialog, DialogContent, DialogHeader, DialogTitle } from "../ui/dialog";
-import FilterComponent from "../filter-component/FilterComponent";
+import { Button } from "@/components/ui/button";
 import { htmlToText } from "html-to-text";
 
-export function JobPostList({ apiPostFormData, updatRouteType, apiRoute }) {
+export function ResultList({ apiPostFormData, updatRouteType, apiRoute }) {
   const [showModal, setShowModal] = useState(false);
   const [jobId, setJobId] = useState(null);
   const [filteredData, setFilteredData] = useState();
   const [dialogContent, setDialogContent] = useState("");
   const [openDialog, setOpenDialog] = useState(false);
   const [searchTerm, setSearchTerm] = useState("");
+  // const [error, setError] = useState(""); // State for capturing error messages
   const router = useRouter();
-
-  useEffect(() => {
-    setFilteredData(apiPostFormData || []);
-  }, [apiPostFormData]);
 
   const locations = Array.from(
     new Set(apiPostFormData?.map((job) => job.State?.name || "") || [])
@@ -51,11 +54,16 @@ export function JobPostList({ apiPostFormData, updatRouteType, apiRoute }) {
     })
   );
 
+  useEffect(() => {
+    setFilteredData(apiPostFormData || []); // Set initial data
+  }, [apiPostFormData]);
+
   const handleSearch = (term) => {
+    console.log(apiPostFormData);
     const searchTerms = term.split(",").map((t) => t.trim().toLowerCase());
     const filtered = apiPostFormData.filter((formData) =>
       searchTerms.some((searchTerm) =>
-        Object.values(formData).some(
+        Object.values(formData.job).some(
           (value) =>
             typeof value === "string" &&
             value.toLowerCase().includes(searchTerm)
@@ -107,65 +115,13 @@ export function JobPostList({ apiPostFormData, updatRouteType, apiRoute }) {
       const departmentMatch = job["Depertment"]["name"]
         .toLowerCase()
         .includes(filters.department.toLowerCase());
+
       const categoryMatch = job["Category"]["name"]
         .toLowerCase()
         .includes(filters.category.toLowerCase());
 
-      const jobDate = job.created_at ? new Date(job.created_at) : null;
-      const dateFrom = filters.publishDate?.from
-        ? new Date(filters.publishDate.from)
-        : null;
-      const dateTo = filters.publishDate?.to
-        ? new Date(filters.publishDate.to)
-        : null;
-
-      const publishDateMatch =
-        jobDate && dateFrom && dateTo
-          ? jobDate >= dateFrom && jobDate <= dateTo
-          : true; // No filter selected, match all
-
-      const contentMatch = job["content"]
-        .toLowerCase()
-        .includes(filters.content.toLowerCase());
-
-      const salaryMatch = job["content"].match(/salary\s*=\s*(\d+)-(\d+)/);
-      const salaryInRange =
-        salaryMatch &&
-        filters.salary >= Number(salaryMatch[1]) &&
-        filters.salary <= Number(salaryMatch[2]);
-
-      // Age check
-      const ageMatch = job["content"].match(/age\s*=\s*(\d+)-(\d+)/);
-      const ageInRange =
-        ageMatch &&
-        filters.age >= Number(ageMatch[1]) &&
-        filters.age <= Number(ageMatch[2]);
-
-      //exprience check
-      const exprienceMatch = job["content"].match(
-        /exprience\s*=\s*(\d+)-(\d+)/
-      );
-      const exprienceInRange =
-        exprienceMatch &&
-        filters.exprience >= Number(exprienceMatch[1]) &&
-        filters.exprience <= Number(exprienceMatch[2]);
-
-      // If no filters for age, default to true
-      const ageRangeValid = filters.age ? ageInRange : true;
-      // If no filters for salary, default to true
-      const salaryRangeValid = filters.salary ? salaryInRange : true;
-      // If no filters for exprience, default to true
-      const exprienceRangeValid = filters.exprience ? exprienceInRange : true;
-      return (
-        locationMatch &&
-        departmentMatch &&
-        categoryMatch &&
-        contentMatch &&
-        publishDateMatch &&
-        salaryRangeValid &&
-        ageRangeValid &&
-        exprienceRangeValid
-      );
+      // Check if all conditions are true
+      return locationMatch && departmentMatch && categoryMatch;
     });
 
     setFilteredData(filtered);
@@ -180,9 +136,10 @@ export function JobPostList({ apiPostFormData, updatRouteType, apiRoute }) {
         categories={categories}
         departments={departments}
         contentData={contentData}
-        dateLabel="Publish"
+        dateLabel="Result"
       />
-
+      {/* {error && <p className="text-red-600 mt-2">{error}</p>}{" "} */}
+      {/* Display error message if any */}
       <ModalForm
         showModal={showModal}
         setShowModal={setShowModal}
@@ -214,7 +171,7 @@ export function JobPostList({ apiPostFormData, updatRouteType, apiRoute }) {
       </Dialog>
       <Table className="min-w-full bg-white rounded-md border border-gray-200">
         <TableCaption className="text-gray-600 font-semibold text-lg py-3">
-          A list of your Job Posts
+          A list of your Admit Card
         </TableCaption>
         <TableHeader className="bg-gray-50">
           <TableRow>
@@ -247,45 +204,45 @@ export function JobPostList({ apiPostFormData, updatRouteType, apiRoute }) {
                 className="hover:bg-gray-50 transition-all duration-200"
               >
                 <TableCell className="p-4 text-gray-800">
-                  {renderCell(formData?.title)}
+                  {renderCell(formData?.job?.title)}
                 </TableCell>
                 <TableCell className="p-4 text-gray-600">
-                  {renderCell(formData?.created_at)}
+                  {renderCell(formData?.update_date)}
                 </TableCell>
                 <TableCell className="p-4 text-gray-600">
-                  {renderCell(formData?.description)}
+                  {renderCell(formData?.job?.description)}
                 </TableCell>
                 <TableCell className="p-4 text-gray-600 truncate">
                   <a
                     href="#"
-                    onClick={() => openContentDialog(formData?.content)}
+                    onClick={() => openContentDialog(formData?.job?.content)}
                     className="text-blue-500 hover:underline"
                   >
-                    {renderCell(formData?.content)}
+                    {renderCell(formData?.job?.content)}
                   </a>
                 </TableCell>
                 <TableCell className="p-4 text-gray-600">
-                  {renderCell(formData?.slug)}
+                  {renderCell(formData?.job?.slug)}
                 </TableCell>
                 <TableCell className="p-4 text-gray-600">
-                  {renderCell(formData?.metaTags)}
+                  {renderCell(formData?.job?.meta_title)}
                 </TableCell>
                 <TableCell className="p-4 text-gray-600">
-                  {renderCell(formData?.metaDescription)}
+                  {renderCell(formData?.job?.meta_description)}
                 </TableCell>
                 <TableCell className="p-4 text-gray-600">
-                  {renderCell(formData?.canonicalUrl)}
+                  {renderCell(formData?.job?.canonical_url)}
                 </TableCell>
                 <TableCell className="flex justify-end gap-2 p-4">
                   <Button
-                    onClick={() => updateFormData(formData)}
+                    onClick={() => updateFormData(formData.job)}
                     className="bg-blue-500 text-white"
                   >
                     <MdModeEditOutline />
                   </Button>
                   <Button
                     variant="destructive"
-                    onClick={() => deleteFormData(formData.id)}
+                    onClick={() => deleteFormData(formData.job.id)}
                     className="bg-red-500 text-white"
                   >
                     <RiDeleteBin6Line />
@@ -313,3 +270,24 @@ export function JobPostList({ apiPostFormData, updatRouteType, apiRoute }) {
     </div>
   );
 }
+
+export const generateMetaData = async (formData) => {
+  if (!formData) return {};
+
+  // Define basic metadata fields based on formData
+  const metadata = {
+    title: formData.title || "Add Job Post",
+    description: formData.metaDescription || formData.description || "",
+    canonical: formData.canonicalUrl || "",
+    metaTags: formData.metaTags
+      ? formData.metaTags.split(",").map((tag) => tag.trim())
+      : [],
+  };
+
+  return {
+    title: metadata.title,
+    description: metadata.description,
+    canonical: metadata.canonical,
+    metaTags: metadata.metaTags,
+  };
+};

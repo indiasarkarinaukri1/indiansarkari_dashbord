@@ -1,6 +1,5 @@
 "use client";
 import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import apiurl from "@/utils";
 import React, { useState } from "react";
@@ -9,7 +8,6 @@ const ModalForm = ({ showModal, setShowModal, jobId }) => {
   const [formData, setFormData] = useState({
     update_type: "",
     job_id: "",
-    update_link: "",
   });
 
   const handleInputChange = (e) => {
@@ -31,7 +29,6 @@ const ModalForm = ({ showModal, setShowModal, jobId }) => {
       setFormData({
         update_type: "",
         job_id: "",
-        update_link: "",
       });
     } catch (error) {
       console.log(error);
@@ -64,7 +61,6 @@ const ModalForm = ({ showModal, setShowModal, jobId }) => {
             <form onSubmit={handleSubmit} className="space-y-4">
               <div>
                 <Label className="text-base font-medium">
-                  {" "}
                   Select Type <span className="text-red-500">*</span>
                 </Label>
                 <select
@@ -75,11 +71,9 @@ const ModalForm = ({ showModal, setShowModal, jobId }) => {
                   className="mt-1 w-full border-gray-300 rounded-md shadow-sm focus:border-blue-500 focus:ring focus:ring-blue-200 text-lg"
                 >
                   <option value="" className="text-lg">
-                    {" "}
                     Select Type
                   </option>
                   <option value="admit_card" className="text-lg">
-                    {" "}
                     Admit Card
                   </option>
                   <option value="answer_key" className="text-lg">
@@ -89,24 +83,9 @@ const ModalForm = ({ showModal, setShowModal, jobId }) => {
                     Result
                   </option>
                   <option value="other" className="text-lg">
-                    Result
+                    Other
                   </option>
                 </select>
-              </div>
-
-              <div>
-                <Label className="text-sm font-medium">
-                  Enter URL <span className="text-red-500">*</span>
-                </Label>
-
-                <Input
-                  name="update_link"
-                  placeholder="Enter url"
-                  value={formData.update_link}
-                  onChange={handleInputChange}
-                  required
-                  className="mt-1 w-full border-gray-300 rounded-md shadow-sm focus:border-blue-500 focus:ring focus:ring-blue-200"
-                />
               </div>
 
               <Button

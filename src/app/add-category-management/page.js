@@ -25,9 +25,11 @@ const AddCategoryManagement = () => {
       }
     }
   }, [format]);
+
   const handleSubmit = async (e) => {
     e.preventDefault();
     setLoading(true);
+
     try {
       const apiResponse = await fetch(
         formData.id
@@ -61,6 +63,7 @@ const AddCategoryManagement = () => {
       setLoading(false);
     }
   };
+
   return (
     <CategoryForm
       pageName="Category Management"
