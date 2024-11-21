@@ -1,4 +1,3 @@
-import JobManagementOption from "@/components/job-management-option";
 import apiurl from "@/utils";
 import { AnswerKeyList } from "@/components/answer-key-list";
 const fetchFromData = async () => {
@@ -21,11 +20,6 @@ export default async function AnswerKey() {
 
   return (
     <>
-      <JobManagementOption
-        link="add-answer-key"
-        pageName="Answer Key Page"
-        option="New Answer Key"
-      />
       <h1 className="font-bold text-3xl text-gray-900">
         All AnswerKey List Here
       </h1>

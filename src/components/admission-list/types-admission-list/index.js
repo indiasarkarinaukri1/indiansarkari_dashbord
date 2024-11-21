@@ -2,6 +2,18 @@
 import React, { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import parse from "html-react-parser";
+
+import { MdModeEditOutline } from "react-icons/md";
+import { RiDeleteBin6Line } from "react-icons/ri";
+import apiurl from "@/utils";
+import { htmlToText } from "html-to-text";
+import SearchBar from "@/components/search";
+import {
+  Dialog,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+} from "@/components/ui/dialog";
 import {
   Table,
   TableBody,
@@ -11,19 +23,13 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
-import { Button } from "../ui/button";
-import { MdModeEditOutline } from "react-icons/md";
-import { RiDeleteBin6Line } from "react-icons/ri";
-import apiurl from "@/utils";
-import ModalForm from "./ModalForm/ModalForm";
-import SearchBar from "../search";
-import { Dialog, DialogContent, DialogHeader, DialogTitle } from "../ui/dialog";
-import FilterComponent from "../filter-component/FilterComponent";
-import { htmlToText } from "html-to-text";
+import { Button } from "@/components/ui/button";
 
-export function AdmissionList({ apiPostFormData, updatRouteType, apiRoute }) {
-  const [showModal, setShowModal] = useState(false);
-  const [admissionId, setAdmissionJobId] = useState(null);
+export function AdmissionListTypes({
+  apiPostFormData,
+  updatRouteType,
+  apiRoute,
+}) {
   const [filteredData, setFilteredData] = useState();
   const [dialogContent, setDialogContent] = useState("");
   const [openDialog, setOpenDialog] = useState(false);
@@ -56,7 +62,7 @@ export function AdmissionList({ apiPostFormData, updatRouteType, apiRoute }) {
     const searchTerms = term.split(",").map((t) => t.trim().toLowerCase());
     const filtered = apiPostFormData.filter((formData) =>
       searchTerms.some((searchTerm) =>
-        Object.values(formData).some(
+        Object.values(formData.admission).some(
           (value) =>
             typeof value === "string" &&
             value.toLowerCase().includes(searchTerm)
@@ -87,11 +93,6 @@ export function AdmissionList({ apiPostFormData, updatRouteType, apiRoute }) {
     if (!data) return "";
     return data.length > 5 ? `${data.substring(0, 5)}...` : data;
   };
-
-  function OpenHandler(id) {
-    setAdmissionJobId(id);
-    setShowModal(true);
-  }
 
   const openContentDialog = (content) => {
     setDialogContent(content);
@@ -184,11 +185,6 @@ export function AdmissionList({ apiPostFormData, updatRouteType, apiRoute }) {
         dateLabel="Publish"
       /> */}
 
-      <ModalForm
-        showModal={showModal}
-        setShowModal={setShowModal}
-        admissionId={admissionId}
-      />
       <Dialog open={openDialog} onOpenChange={setOpenDialog}>
         <DialogContent className="max-w-[90%] max-h-[80vh] overflow-y-auto">
           <DialogHeader className="flex justify-between">
@@ -229,7 +225,6 @@ export function AdmissionList({ apiPostFormData, updatRouteType, apiRoute }) {
               "Meta Description",
               "Canonical URL",
               "Actions",
-              "Job Update",
             ].map((header) => (
               <TableHead
                 key={header}
@@ -248,25 +243,27 @@ export function AdmissionList({ apiPostFormData, updatRouteType, apiRoute }) {
                 className="hover:bg-gray-50 transition-all duration-200"
               >
                 <TableCell className="p-4 text-gray-800">
-                  {renderCell(formData?.title)}
+                  {renderCell(formData?.admission.title)}
                 </TableCell>
                 <TableCell className="p-4 text-gray-600">
                   {renderCell(formData?.created_at)}
                 </TableCell>
                 <TableCell className="p-4 text-gray-600">
-                  {renderCell(formData?.description)}
+                  {renderCell(formData?.admission.description)}
                 </TableCell>
                 <TableCell className="p-4 text-gray-600 truncate">
                   <a
                     href="#"
-                    onClick={() => openContentDialog(formData?.content)}
+                    onClick={() =>
+                      openContentDialog(formData?.admission.content)
+                    }
                     className="text-blue-500 hover:underline"
                   >
-                    {renderCell(formData?.content)}
+                    {renderCell(formData?.admission.content)}
                   </a>
                 </TableCell>
                 <TableCell className="p-4 text-gray-600">
-                  {renderCell(formData?.slug)}
+                  {renderCell(formData?.admission.slug)}
                 </TableCell>
                 <TableCell className="p-4 text-gray-600">
                   {renderCell(formData?.metaTags)}
@@ -290,14 +287,6 @@ export function AdmissionList({ apiPostFormData, updatRouteType, apiRoute }) {
                     className="bg-red-500 text-white"
                   >
                     <RiDeleteBin6Line />
-                  </Button>
-                </TableCell>
-                <TableCell className="p-4 text-gray-600">
-                  <Button
-                    onClick={() => OpenHandler(formData.id)}
-                    className="bg-blue-600 text-white font-semibold py-2 px-4 rounded-md hover:bg-blue-700 transition duration-200"
-                  >
-                    Update
                   </Button>
                 </TableCell>
               </TableRow>

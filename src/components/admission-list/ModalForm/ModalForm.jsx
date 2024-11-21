@@ -9,7 +9,6 @@ const ModalForm = ({ showModal, setShowModal, admissionId }) => {
     update_type: "",
     admission_id: "",
   });
-  console.log(formData);
   const handleInputChange = (e) => {
     const { name, value } = e.target;
     setFormData({ ...formData, [name]: value });

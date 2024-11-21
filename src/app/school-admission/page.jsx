@@ -1,8 +1,8 @@
-import { AdmissionList } from "@/components/admission-list";
+import { AdmissionListTypes } from "@/components/admission-list/types-admission-list";
 import apiurl from "@/utils";
 const fetchFormData = async () => {
   try {
-    const apiResponse = await fetch(`${apiurl}/admission`, {
+    const apiResponse = await fetch(`${apiurl}/upadmis/get/school`, {
       method: "GET",
       cache: "no-cache",
     });
@@ -20,9 +20,9 @@ export default async function SchoolAdmission() {
   return (
     <>
       <div className="font-bold text-3xl text-gray-800">
-        all job post list here
-        <AdmissionList
-          apiRoute="admission"
+        all School Admission list here
+        <AdmissionListTypes
+          apiRoute="upadmis"
           apiPostFormData={apiPostFormData}
           updatRouteType="add-admission"
         />

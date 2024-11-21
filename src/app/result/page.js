@@ -1,4 +1,3 @@
-import JobManagementOption from "@/components/job-management-option";
 import { ResultList } from "@/components/result-list";
 import apiurl from "@/utils";
 const fetchFormData = async () => {
@@ -19,11 +18,6 @@ export default async function Result() {
   const apiPostFormData = await fetchFormData();
   return (
     <>
-      <JobManagementOption
-        link="add-result"
-        pageName="Result Page"
-        option="New Result"
-      />
       <div className="font-bold text-3xl text-gray-800">
         all Result list here
         <ResultList

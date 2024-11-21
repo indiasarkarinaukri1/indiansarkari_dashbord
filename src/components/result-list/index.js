@@ -8,7 +8,6 @@ import { RiDeleteBin6Line } from "react-icons/ri";
 import apiurl from "@/utils";
 import FilterComponent from "@/components/filter-component/FilterComponent";
 import SearchBar from "@/components/search";
-import ModalForm from "@/components/job-post-list/ModalForm/ModalForm";
 import {
   Dialog,
   DialogContent,
@@ -28,8 +27,6 @@ import { Button } from "@/components/ui/button";
 import { htmlToText } from "html-to-text";
 
 export function ResultList({ apiPostFormData, updatRouteType, apiRoute }) {
-  const [showModal, setShowModal] = useState(false);
-  const [jobId, setJobId] = useState(null);
   const [filteredData, setFilteredData] = useState();
   const [dialogContent, setDialogContent] = useState("");
   const [openDialog, setOpenDialog] = useState(false);
@@ -94,11 +91,6 @@ export function ResultList({ apiPostFormData, updatRouteType, apiRoute }) {
     if (!data) return "";
     return data.length > 5 ? `${data.substring(0, 5)}...` : data;
   };
-
-  function OpenHandler(id) {
-    setJobId(id);
-    setShowModal(true);
-  }
 
   const openContentDialog = (content) => {
     setDialogContent(content);
@@ -198,11 +190,7 @@ export function ResultList({ apiPostFormData, updatRouteType, apiRoute }) {
       />
       {/* {error && <p className="text-red-600 mt-2">{error}</p>}{" "} */}
       {/* Display error message if any */}
-      <ModalForm
-        showModal={showModal}
-        setShowModal={setShowModal}
-        jobId={jobId}
-      />
+
       <Dialog open={openDialog} onOpenChange={setOpenDialog}>
         <DialogContent className="max-w-[90%] max-h-[80vh] overflow-y-auto">
           <DialogHeader className="flex justify-between">
@@ -243,7 +231,6 @@ export function ResultList({ apiPostFormData, updatRouteType, apiRoute }) {
               "Meta Description",
               "Canonical URL",
               "Actions",
-              "Job Update",
             ].map((header) => (
               <TableHead
                 key={header}
@@ -304,14 +291,6 @@ export function ResultList({ apiPostFormData, updatRouteType, apiRoute }) {
                     className="bg-red-500 text-white"
                   >
                     <RiDeleteBin6Line />
-                  </Button>
-                </TableCell>
-                <TableCell className="p-4 text-gray-600">
-                  <Button
-                    onClick={() => OpenHandler(formData.id)}
-                    className="bg-blue-600 text-white font-semibold py-2 px-4 rounded-md hover:bg-blue-700 transition duration-200"
-                  >
-                    Update
                   </Button>
                 </TableCell>
               </TableRow>

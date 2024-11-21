@@ -1,5 +1,4 @@
 import { AdmitCardList } from "@/components/admit-card-list";
-import JobManagementOption from "@/components/job-management-option";
 import apiurl from "@/utils";
 const fetchFormData = async () => {
   try {
@@ -20,11 +19,6 @@ export default async function AdmitCard() {
   // console.log(apiPostFormData);
   return (
     <>
-      <JobManagementOption
-        link="add-admit-card"
-        pageName="Admit Card Page"
-        option="New Admit Card"
-      />
       <div className="font-bold text-3xl text-gray-800">
         all AdmitCard list here
         <AdmitCardList
