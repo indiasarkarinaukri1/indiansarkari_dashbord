@@ -12,6 +12,13 @@ export const jobManagementItems = [
   { label: "Department", path: "department-management" },
 ];
 
+export const AdmissionManagementItems = [
+  { label: "Admission", path: "admission" },
+  { label: "School Admission", path: "school-admission" },
+  { label: "Collage Admission", path: "collage-admission" },
+  { label: "University Admission", path: "university-admission" },
+];
+
 const apiurl = "https://newindiansarkari-production.up.railway.app";
 
 export const handleFilter = (filters) => {

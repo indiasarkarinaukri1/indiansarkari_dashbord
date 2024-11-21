@@ -33,14 +33,9 @@ const FilterComponent = ({
   const [resetDate, setResetDate] = useState(false);
   const [resetRange, setResetRange] = useState(false);
 
-  useEffect(() => {
-    console.log(filters);
-  }, [filters]);
-
   const handleInputChange = (key, value) => {
     setFilters({ ...filters, [key]: value });
   };
-
   const handleSearch = (key, value) => {
     if (key === "location") {
       setLocationSuggestions(

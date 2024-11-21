@@ -46,9 +46,8 @@ export function AnswerKeyList({ apiPostFormData, updatRouteType, apiRoute }) {
   const departments = Array.from(
     new Set(apiPostFormData?.map((job) => job.Depertment?.name || "") || [])
   );
-
   const contentData = apiPostFormData?.map((contentItem) =>
-    htmlToText(contentItem.content, {
+    htmlToText(contentItem.job?.content, {
       wordwrap: 130,
       selectors: [{ selector: "a", options: { ignoreHref: true } }],
     })
@@ -120,8 +119,65 @@ export function AnswerKeyList({ apiPostFormData, updatRouteType, apiRoute }) {
         .toLowerCase()
         .includes(filters.category.toLowerCase());
 
+      const jobDate = job.created_at ? new Date(job.created_at) : null;
+      const dateFrom = filters.publishDate?.from
+        ? new Date(filters.publishDate.from)
+        : null;
+      const dateTo = filters.publishDate?.to
+        ? new Date(filters.publishDate.to)
+        : null;
+
+      const publishDateMatch =
+        jobDate && dateFrom && dateTo
+          ? jobDate >= dateFrom && jobDate <= dateTo
+          : true; // No filter selected, match all
+
+      const contentMatch = job["job"]["content"]
+        .toLowerCase()
+        .includes(filters.content.toLowerCase());
+
+      const salaryMatch = job["job"]["content"].match(
+        /salary\s*=\s*(\d+)-(\d+)/
+      );
+      const salaryInRange =
+        salaryMatch &&
+        filters.salary >= Number(salaryMatch[1]) &&
+        filters.salary <= Number(salaryMatch[2]);
+
+      // Age check
+      const ageMatch = job["job"]["content"].match(/age\s*=\s*(\d+)-(\d+)/);
+      const ageInRange =
+        ageMatch &&
+        filters.age >= Number(ageMatch[1]) &&
+        filters.age <= Number(ageMatch[2]);
+
+      //exprience check
+      const exprienceMatch = job["job"]["content"].match(
+        /exprience\s*=\s*(\d+)-(\d+)/
+      );
+      const exprienceInRange =
+        exprienceMatch &&
+        filters.exprience >= Number(exprienceMatch[1]) &&
+        filters.exprience <= Number(exprienceMatch[2]);
+
+      // If no filters for age, default to true
+      const ageRangeValid = filters.age ? ageInRange : true;
+      // If no filters for salary, default to true
+      const salaryRangeValid = filters.salary ? salaryInRange : true;
+      // If no filters for exprience, default to true
+      const exprienceRangeValid = filters.exprience ? exprienceInRange : true;
+
       // Check if all conditions are true
-      return locationMatch && departmentMatch && categoryMatch;
+      return (
+        locationMatch &&
+        departmentMatch &&
+        categoryMatch &&
+        contentMatch &&
+        publishDateMatch &&
+        salaryRangeValid &&
+        ageRangeValid &&
+        exprienceRangeValid
+      );
     });
 
     setFilteredData(filtered);

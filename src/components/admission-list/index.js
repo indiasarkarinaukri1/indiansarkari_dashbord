@@ -2,19 +2,6 @@
 import React, { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import parse from "html-react-parser";
-
-import { MdModeEditOutline } from "react-icons/md";
-import { RiDeleteBin6Line } from "react-icons/ri";
-import apiurl from "@/utils";
-import FilterComponent from "@/components/filter-component/FilterComponent";
-import SearchBar from "@/components/search";
-import ModalForm from "@/components/job-post-list/ModalForm/ModalForm";
-import {
-  Dialog,
-  DialogContent,
-  DialogHeader,
-  DialogTitle,
-} from "@/components/ui/dialog";
 import {
   Table,
   TableBody,
@@ -24,18 +11,29 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
-import { Button } from "@/components/ui/button";
+import { Button } from "../ui/button";
+import { MdModeEditOutline } from "react-icons/md";
+import { RiDeleteBin6Line } from "react-icons/ri";
+import apiurl from "@/utils";
+import ModalForm from "./ModalForm/ModalForm";
+import SearchBar from "../search";
+import { Dialog, DialogContent, DialogHeader, DialogTitle } from "../ui/dialog";
+import FilterComponent from "../filter-component/FilterComponent";
 import { htmlToText } from "html-to-text";
 
-export function AdmitCardList({ apiPostFormData, updatRouteType, apiRoute }) {
+export function AdmissionList({ apiPostFormData, updatRouteType, apiRoute }) {
   const [showModal, setShowModal] = useState(false);
-  const [jobId, setJobId] = useState(null);
+  const [admissionId, setAdmissionJobId] = useState(null);
   const [filteredData, setFilteredData] = useState();
   const [dialogContent, setDialogContent] = useState("");
   const [openDialog, setOpenDialog] = useState(false);
   const [searchTerm, setSearchTerm] = useState("");
-  // const [error, setError] = useState(""); // State for capturing error messages
   const router = useRouter();
+
+  useEffect(() => {
+    setFilteredData(apiPostFormData || []);
+    //router.refresh();
+  }, [apiPostFormData]);
 
   const locations = Array.from(
     new Set(apiPostFormData?.map((job) => job.State?.name || "") || [])
@@ -46,22 +44,19 @@ export function AdmitCardList({ apiPostFormData, updatRouteType, apiRoute }) {
   const departments = Array.from(
     new Set(apiPostFormData?.map((job) => job.Depertment?.name || "") || [])
   );
+
   const contentData = apiPostFormData?.map((contentItem) =>
-    htmlToText(contentItem.job?.content, {
+    htmlToText(contentItem.content, {
       wordwrap: 130,
       selectors: [{ selector: "a", options: { ignoreHref: true } }],
     })
   );
 
-  useEffect(() => {
-    setFilteredData(apiPostFormData || []); // Set initial data
-  }, [apiPostFormData]);
-
   const handleSearch = (term) => {
     const searchTerms = term.split(",").map((t) => t.trim().toLowerCase());
     const filtered = apiPostFormData.filter((formData) =>
       searchTerms.some((searchTerm) =>
-        Object.values(formData.job).some(
+        Object.values(formData).some(
           (value) =>
             typeof value === "string" &&
             value.toLowerCase().includes(searchTerm)
@@ -94,7 +89,8 @@ export function AdmitCardList({ apiPostFormData, updatRouteType, apiRoute }) {
   };
 
   function OpenHandler(id) {
-    setJobId(id);
+    alert(id);
+    setAdmissionJobId(id);
     setShowModal(true);
   }
 
@@ -113,7 +109,6 @@ export function AdmitCardList({ apiPostFormData, updatRouteType, apiRoute }) {
       const departmentMatch = job["Depertment"]["name"]
         .toLowerCase()
         .includes(filters.department.toLowerCase());
-
       const categoryMatch = job["Category"]["name"]
         .toLowerCase()
         .includes(filters.category.toLowerCase());
@@ -131,31 +126,25 @@ export function AdmitCardList({ apiPostFormData, updatRouteType, apiRoute }) {
           ? jobDate >= dateFrom && jobDate <= dateTo
           : true; // No filter selected, match all
 
-      const contentMatch = job["job"]["content"]
+      const contentMatch = job["content"]
         .toLowerCase()
         .includes(filters.content.toLowerCase());
 
-      console.log(job["job"]["content"]);
-
-      console.log(filters.content.toLowerCase());
-
-      const salaryMatch = job["job"]["content"].match(
-        /salary\s*=\s*(\d+)-(\d+)/
-      );
+      const salaryMatch = job["content"].match(/salary\s*=\s*(\d+)-(\d+)/);
       const salaryInRange =
         salaryMatch &&
         filters.salary >= Number(salaryMatch[1]) &&
         filters.salary <= Number(salaryMatch[2]);
 
       // Age check
-      const ageMatch = job["job"]["content"].match(/age\s*=\s*(\d+)-(\d+)/);
+      const ageMatch = job["content"].match(/age\s*=\s*(\d+)-(\d+)/);
       const ageInRange =
         ageMatch &&
         filters.age >= Number(ageMatch[1]) &&
         filters.age <= Number(ageMatch[2]);
 
       //exprience check
-      const exprienceMatch = job["job"]["content"].match(
+      const exprienceMatch = job["content"].match(
         /exprience\s*=\s*(\d+)-(\d+)/
       );
       const exprienceInRange =
@@ -169,8 +158,6 @@ export function AdmitCardList({ apiPostFormData, updatRouteType, apiRoute }) {
       const salaryRangeValid = filters.salary ? salaryInRange : true;
       // If no filters for exprience, default to true
       const exprienceRangeValid = filters.exprience ? exprienceInRange : true;
-
-      // Check if all conditions are true
       return (
         locationMatch &&
         departmentMatch &&
@@ -189,20 +176,19 @@ export function AdmitCardList({ apiPostFormData, updatRouteType, apiRoute }) {
   return (
     <div className="overflow-x-auto shadow-lg rounded-lg mt-6">
       <SearchBar onSearch={handleSearch} />
-      <FilterComponent
+      {/* <FilterComponent
         onApplyFilter={handleFilter}
         locations={locations}
         categories={categories}
         departments={departments}
         contentData={contentData}
-        dateLabel="Admit Card"
-      />
-      {/* {error && <p className="text-red-600 mt-2">{error}</p>}{" "} */}
-      {/* Display error message if any */}
+        dateLabel="Publish"
+      /> */}
+
       <ModalForm
         showModal={showModal}
         setShowModal={setShowModal}
-        jobId={jobId}
+        admissionId={admissionId}
       />
       <Dialog open={openDialog} onOpenChange={setOpenDialog}>
         <DialogContent className="max-w-[90%] max-h-[80vh] overflow-y-auto">
@@ -230,7 +216,7 @@ export function AdmitCardList({ apiPostFormData, updatRouteType, apiRoute }) {
       </Dialog>
       <Table className="min-w-full bg-white rounded-md border border-gray-200">
         <TableCaption className="text-gray-600 font-semibold text-lg py-3">
-          A list of your Admit Card
+          A list of your Job Posts
         </TableCaption>
         <TableHeader className="bg-gray-50">
           <TableRow>
@@ -263,38 +249,38 @@ export function AdmitCardList({ apiPostFormData, updatRouteType, apiRoute }) {
                 className="hover:bg-gray-50 transition-all duration-200"
               >
                 <TableCell className="p-4 text-gray-800">
-                  {renderCell(formData?.job?.title)}
+                  {renderCell(formData?.title)}
                 </TableCell>
                 <TableCell className="p-4 text-gray-600">
-                  {renderCell(formData?.update_date)}
+                  {renderCell(formData?.created_at)}
                 </TableCell>
                 <TableCell className="p-4 text-gray-600">
-                  {renderCell(formData?.job?.description)}
+                  {renderCell(formData?.description)}
                 </TableCell>
                 <TableCell className="p-4 text-gray-600 truncate">
                   <a
                     href="#"
-                    onClick={() => openContentDialog(formData?.job?.content)}
+                    onClick={() => openContentDialog(formData?.content)}
                     className="text-blue-500 hover:underline"
                   >
-                    {renderCell(formData?.job?.content)}
+                    {renderCell(formData?.content)}
                   </a>
                 </TableCell>
                 <TableCell className="p-4 text-gray-600">
-                  {renderCell(formData?.job?.slug)}
+                  {renderCell(formData?.slug)}
                 </TableCell>
                 <TableCell className="p-4 text-gray-600">
-                  {renderCell(formData?.job?.meta_title)}
+                  {renderCell(formData?.metaTags)}
                 </TableCell>
                 <TableCell className="p-4 text-gray-600">
-                  {renderCell(formData?.job?.meta_description)}
+                  {renderCell(formData?.metaDescription)}
                 </TableCell>
                 <TableCell className="p-4 text-gray-600">
-                  {renderCell(formData?.job?.canonical_url)}
+                  {renderCell(formData?.canonicalUrl)}
                 </TableCell>
                 <TableCell className="flex justify-end gap-2 p-4">
                   <Button
-                    onClick={() => updateFormData(formData.job)}
+                    onClick={() => updateFormData(formData)}
                     className="bg-blue-500 text-white"
                   >
                     <MdModeEditOutline />
@@ -329,24 +315,3 @@ export function AdmitCardList({ apiPostFormData, updatRouteType, apiRoute }) {
     </div>
   );
 }
-
-export const generateMetaData = async (formData) => {
-  if (!formData) return {};
-
-  // Define basic metadata fields based on formData
-  const metadata = {
-    title: formData.title || "Add Job Post",
-    description: formData.metaDescription || formData.description || "",
-    canonical: formData.canonicalUrl || "",
-    metaTags: formData.metaTags
-      ? formData.metaTags.split(",").map((tag) => tag.trim())
-      : [],
-  };
-
-  return {
-    title: metadata.title,
-    description: metadata.description,
-    canonical: metadata.canonical,
-    metaTags: metadata.metaTags,
-  };
-};
