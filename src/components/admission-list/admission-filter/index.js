@@ -1,9 +1,10 @@
 import React, { useEffect, useState } from "react";
-import { Button } from "../ui/button";
-import InputSearch from "./drop-down/DropDown";
-import { RangeFilter } from "./RangeFilter";
-import { Label } from "../ui/label";
-import { DatePickerWithRange } from "./CalenderFilter";
+
+import InputSearch from "@/components/filter-component/drop-down/DropDown";
+import { RangeFilter } from "@/components/filter-component/RangeFilter";
+import { DatePickerWithRange } from "@/components/filter-component/CalenderFilter";
+import { Button } from "@/components/ui/button";
+import { Label } from "@/components/ui/label";
 const defalutInitialValue = {
   location: "",
   category: "",
@@ -114,57 +115,30 @@ const FilterComponent = ({
           clear={filters.department === ""}
         />
         <InputSearch
-          placeholder="Passed Education"
+          placeholder="Education"
           value={filters.content}
           suggestions={contentSuggestions}
           onSearch={(value) => handleSearch("content", value)}
           clearSuggestions={() => setContentSuggestions([])}
           clear={filters.content === ""}
         />
-      </div>
-
-      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 mt-6">
-        <div className="flex flex-col">
-          {/* <Label className="font-semibold text-gray-700 mb-2">
-            Salary 10k-100k
-          </Label> */}
-          <RangeFilter
-            min={10000}
-            max={100000}
-            label="Salary"
-            onChange={(value) => {
-              //console.log("Salary range selected:", value);
-              setFilters({ ...filters, salary: value[0] });
-            }}
-            resetRange={resetRange}
-          />
-        </div>
-        <div className="flex flex-col">
-          {/* <Label className="font-semibold text-gray-700 mb-2">Age 15-40</Label> */}
-          <RangeFilter
-            min={15}
-            max={40}
-            label="Age"
-            onChange={(value) => {
-              //console.log("Age range selected:", value);
-              setFilters({ ...filters, age: value[0] });
-            }}
-            resetRange={resetRange}
-          />
-        </div>
-        <div className="flex flex-col">
-          {/* <Label className="font-semibold text-gray-700 mb-2">Age 15-40</Label> */}
-          <RangeFilter
-            min={0}
-            max={10}
-            label="Exprience"
-            onChange={(value) => {
-              //console.log("Age range selected:", value);
-              setFilters({ ...filters, exprience: value[0] });
-            }}
-            resetRange={resetRange}
-          />
-        </div>
+       
+        <InputSearch
+          placeholder="Class"
+          value={filters.content}
+          suggestions={contentSuggestions}
+          onSearch={(value) => handleSearch("content", value)}
+          clearSuggestions={() => setContentSuggestions([])}
+          clear={filters.content === ""}
+        />
+        <InputSearch
+          placeholder="Current Course"
+          value={filters.content}
+          suggestions={contentSuggestions}
+          onSearch={(value) => handleSearch("content", value)}
+          clearSuggestions={() => setContentSuggestions([])}
+          clear={filters.content === ""}
+        />
         <div className="flex flex-col">
           <Label className="font-semibold text-gray-700 mb-2">
             {dateLabel} Date
@@ -176,6 +150,11 @@ const FilterComponent = ({
             resetDate={resetDate}
           />
         </div>
+      </div>
+
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 mt-6">
+        
+        
       </div>
       <div className="flex justify-center space-x-4 mt-6">
         <Button

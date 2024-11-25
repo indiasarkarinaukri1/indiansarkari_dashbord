@@ -127,10 +127,7 @@ export function AdmitCardList({ apiPostFormData, updatRouteType, apiRoute }) {
         .toLowerCase()
         .includes(filters.content.toLowerCase());
 
-      console.log(job["job"]["content"]);
-
-      console.log(filters.content.toLowerCase());
-
+     
       const salaryMatch = job["job"]["content"].match(
         /salary\s*=\s*(\d+)-(\d+)/
       );

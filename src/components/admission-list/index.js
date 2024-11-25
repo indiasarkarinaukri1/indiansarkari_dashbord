@@ -18,8 +18,8 @@ import apiurl from "@/utils";
 import ModalForm from "./ModalForm/ModalForm";
 import SearchBar from "../search";
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "../ui/dialog";
-import FilterComponent from "../filter-component/FilterComponent";
 import { htmlToText } from "html-to-text";
+import FilterComponent from "./admission-filter";
 
 export function AdmissionList({ apiPostFormData, updatRouteType, apiRoute }) {
   const [showModal, setShowModal] = useState(false);
@@ -32,7 +32,7 @@ export function AdmissionList({ apiPostFormData, updatRouteType, apiRoute }) {
 
   useEffect(() => {
     setFilteredData(apiPostFormData || []);
-    //router.refresh();
+  
   }, [apiPostFormData]);
 
   const locations = Array.from(
@@ -175,14 +175,14 @@ export function AdmissionList({ apiPostFormData, updatRouteType, apiRoute }) {
   return (
     <div className="overflow-x-auto shadow-lg rounded-lg mt-6">
       <SearchBar onSearch={handleSearch} />
-      {/* <FilterComponent
+      <FilterComponent
         onApplyFilter={handleFilter}
         locations={locations}
         categories={categories}
         departments={departments}
         contentData={contentData}
         dateLabel="Publish"
-      /> */}
+      />
 
       <ModalForm
         showModal={showModal}

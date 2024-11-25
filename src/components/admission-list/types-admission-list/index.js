@@ -24,6 +24,7 @@ import {
   TableRow,
 } from "@/components/ui/table";
 import { Button } from "@/components/ui/button";
+import FilterComponent from "../admission-filter";
 
 export function AdmissionListTypes({
   apiPostFormData,
@@ -38,7 +39,7 @@ export function AdmissionListTypes({
 
   useEffect(() => {
     setFilteredData(apiPostFormData || []);
-    //router.refresh();
+    
   }, [apiPostFormData]);
 
   const locations = Array.from(
@@ -52,11 +53,12 @@ export function AdmissionListTypes({
   );
 
   const contentData = apiPostFormData?.map((contentItem) =>
-    htmlToText(contentItem.content, {
+    htmlToText(contentItem.admission.content, {
       wordwrap: 130,
       selectors: [{ selector: "a", options: { ignoreHref: true } }],
     })
   );
+
 
   const handleSearch = (term) => {
     const searchTerms = term.split(",").map((t) => t.trim().toLowerCase());
@@ -126,25 +128,25 @@ export function AdmissionListTypes({
           ? jobDate >= dateFrom && jobDate <= dateTo
           : true; // No filter selected, match all
 
-      const contentMatch = job["content"]
+      const contentMatch = job['admission']["content"]
         .toLowerCase()
         .includes(filters.content.toLowerCase());
 
-      const salaryMatch = job["content"].match(/salary\s*=\s*(\d+)-(\d+)/);
+      const salaryMatch = job['admission']["content"].match(/salary\s*=\s*(\d+)-(\d+)/);
       const salaryInRange =
         salaryMatch &&
         filters.salary >= Number(salaryMatch[1]) &&
         filters.salary <= Number(salaryMatch[2]);
 
       // Age check
-      const ageMatch = job["content"].match(/age\s*=\s*(\d+)-(\d+)/);
+      const ageMatch = job['admission']["content"].match(/age\s*=\s*(\d+)-(\d+)/);
       const ageInRange =
         ageMatch &&
         filters.age >= Number(ageMatch[1]) &&
         filters.age <= Number(ageMatch[2]);
 
       //exprience check
-      const exprienceMatch = job["content"].match(
+      const exprienceMatch = job['admission']["content"].match(
         /exprience\s*=\s*(\d+)-(\d+)/
       );
       const exprienceInRange =
@@ -176,14 +178,14 @@ export function AdmissionListTypes({
   return (
     <div className="overflow-x-auto shadow-lg rounded-lg mt-6">
       <SearchBar onSearch={handleSearch} />
-      {/* <FilterComponent
+      <FilterComponent
         onApplyFilter={handleFilter}
         locations={locations}
         categories={categories}
         departments={departments}
         contentData={contentData}
         dateLabel="Publish"
-      /> */}
+      />
 
       <Dialog open={openDialog} onOpenChange={setOpenDialog}>
         <DialogContent className="max-w-[90%] max-h-[80vh] overflow-y-auto">
